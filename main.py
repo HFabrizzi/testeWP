@@ -4,19 +4,28 @@ app = Flask(__name__)
 
 @app.route('/webhook', methods=['POST'])
 def webhook():
-    # Captura os dados enviados pela Maytapi API
-    data = request.json
+    try:
+        # Captura os dados enviados pela Maytapi API
+        data = request.json
+        
+        # Validação básica
+        if not data:
+            return jsonify({"status": "Nenhum dado recebido"}), 400
 
-    # Extraindo informações da mensagem
-    mensagem = data.get('message')  # Conteúdo da mensagem
-    remetente = data.get('from')  # Número do remetente
-    grupo = data.get('group_name')  # Nome do grupo (se aplicável)
+        # Extraindo informações da mensagem com fallback
+        mensagem = data.get('message', 'Mensagem não disponível')
+        remetente = data.get('from', 'Remetente não identificado')
+        grupo = data.get('group_name', 'Grupo não identificado')
 
-    # Log no terminal
-    print(f"Mensagem recebida de {remetente} no grupo {grupo}: {mensagem}")
+        # Log no terminal
+        print(f"Mensagem recebida de {remetente} no grupo {grupo}: {mensagem}")
+        
+        # Resposta ao webhook
+        return jsonify({"status": "Mensagem processada"}), 200
     
-    # Enviar resposta ao Maytapi (se necessário)
-    return jsonify({"status": "Mensagem processada"}), 200
+    except Exception as e:
+        print(f"Erro no processamento: {e}")
+        return jsonify({"status": "Erro no processamento", "error": str(e)}), 500
 
-"if __name__ == '__main__':
-    app.run(port=5000)"
+# app.run é removido em produção
+
