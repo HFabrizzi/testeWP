@@ -18,5 +18,5 @@ def webhook():
     # Enviar resposta ao Maytapi (se necessário)
     return jsonify({"status": "Mensagem processada"}), 200
 
-if __name__ == '__main__':
-    app.run(port=5000)
+"if __name__ == '__main__':
+    app.run(port=5000)"
